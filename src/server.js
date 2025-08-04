@@ -77,11 +77,19 @@ app.use('*', (req, res) => {
 });
 
 // Database connection
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/ai-fashion';
+const MONGODB_URI = process.env.MONGODB_URI || process.env.DATABASE_URL || 'mongodb://localhost:27017/ai-fashion';
 
-if (!process.env.MONGODB_URI) {
+// Debug environment variables
+console.log('🔍 Environment Variables Check:');
+console.log('MONGODB_URI:', process.env.MONGODB_URI ? '✅ Set' : '❌ Not set');
+console.log('DATABASE_URL:', process.env.DATABASE_URL ? '✅ Set' : '❌ Not set');
+console.log('PORT:', process.env.PORT || 'Not set');
+console.log('NODE_ENV:', process.env.NODE_ENV || 'Not set');
+
+if (!process.env.MONGODB_URI && !process.env.DATABASE_URL) {
   console.warn('⚠️  MONGODB_URI not found in environment variables');
-  console.warn('Using fallback MongoDB URI. Please set MONGODB_URI in Railway environment variables.');
+  console.warn('💡 Railway might be using DATABASE_URL instead of MONGODB_URI');
+  console.warn('🔧 Please check your Railway environment variables');
 }
 
 mongoose.connect(MONGODB_URI)
