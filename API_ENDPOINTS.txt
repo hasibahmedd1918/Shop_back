@@ -1,0 +1,129 @@
+AI FASHION E-COMMERCE BACKEND - API ENDPOINTS
+================================================
+
+Complete API Endpoints List
+==========================
+
+🔐 AUTHENTICATION ROUTES (/api/auth)
+------------------------------------
+| Method | Endpoint | Access | Description |
+|--------|----------|--------|-------------|
+| POST   | /api/auth/register | Public | Register a new user account |
+| POST   | /api/auth/login | Public | Login user |
+| GET    | /api/auth/me | Private | Get current user profile |
+| PUT    | /api/auth/profile | Private | Update user profile |
+| PUT    | /api/auth/change-password | Private | Change user password |
+| POST   | /api/auth/forgot-password | Public | Request password reset |
+| POST   | /api/auth/reset-password | Public | Reset password with token |
+| POST   | /api/auth/logout | Private | Logout user |
+
+👤 USER MANAGEMENT ROUTES (/api/users)
+--------------------------------------
+| Method | Endpoint | Access | Description |
+|--------|----------|--------|-------------|
+| GET    | /api/users/profile | Private | Get user profile |
+| PUT    | /api/users/profile | Private | Update user profile |
+| POST   | /api/users/addresses | Private | Add new address |
+| PUT    | /api/users/addresses/:addressId | Private | Update address |
+| DELETE | /api/users/addresses/:addressId | Private | Delete address |
+| GET    | /api/users/addresses | Private | Get all user addresses |
+| GET    | /api/users/ | Admin | Get all users (admin only) |
+| GET    | /api/users/:id | Admin | Get specific user (admin only) |
+| PUT    | /api/users/:id | Admin | Update specific user (admin only) |
+| DELETE | /api/users/:id | Admin | Delete specific user (admin only) |
+
+🛍️ PRODUCT ROUTES (/api/products)
+----------------------------------
+| Method | Endpoint | Access | Description |
+|--------|----------|--------|-------------|
+| GET    | /api/products/ | Public | Get all products (with filtering, sorting, pagination) |
+| GET    | /api/products/:id | Public | Get single product details |
+| POST   | /api/products/ | Admin | Create new product (admin only) |
+| PUT    | /api/products/:id | Admin | Update product (admin only) |
+| DELETE | /api/products/:id | Admin | Delete product (admin only) |
+| POST   | /api/products/:id/reviews | Private | Add product review |
+| GET    | /api/products/categories | Public | Get all product categories |
+| GET    | /api/products/featured | Public | Get featured products |
+| GET    | /api/products/new-arrivals | Public | Get new arrival products |
+| GET    | /api/products/sale | Public | Get sale products |
+
+🛒 CART ROUTES (/api/cart)
+---------------------------
+| Method | Endpoint | Access | Description |
+|--------|----------|--------|-------------|
+| GET    | /api/cart/ | Private | Get user's cart |
+| POST   | /api/cart/items | Private | Add item to cart |
+| PUT    | /api/cart/items/:itemId | Private | Update cart item quantity |
+| DELETE | /api/cart/items/:itemId | Private | Remove item from cart |
+| DELETE | /api/cart/ | Private | Clear entire cart |
+| POST   | /api/cart/coupon | Private | Apply coupon to cart |
+| DELETE | /api/cart/coupon | Private | Remove coupon from cart |
+| GET    | /api/cart/summary | Private | Get cart summary |
+
+📦 ORDER ROUTES (/api/orders)
+------------------------------
+| Method | Endpoint | Access | Description |
+|--------|----------|--------|-------------|
+| POST   | /api/orders/ | Private | Create new order from cart |
+| GET    | /api/orders/ | Private | Get user's orders |
+| GET    | /api/orders/:id | Private | Get specific order details |
+| PUT    | /api/orders/:id/cancel | Private | Cancel order |
+| PUT    | /api/orders/:id/status | Admin | Update order status (admin only) |
+| GET    | /api/orders/:id/tracking | Private | Get order tracking info |
+
+❤️ WISHLIST ROUTES (/api/wishlist)
+-----------------------------------
+| Method | Endpoint | Access | Description |
+|--------|----------|--------|-------------|
+| GET    | /api/wishlist/ | Private | Get user's wishlist |
+| POST   | /api/wishlist/items | Private | Add item to wishlist |
+| DELETE | /api/wishlist/items/:productId | Private | Remove item from wishlist |
+| PUT    | /api/wishlist/items/:productId | Private | Update wishlist item note |
+| DELETE | /api/wishlist/ | Private | Clear entire wishlist |
+| GET    | /api/wishlist/check/:productId | Private | Check if product is in wishlist |
+| POST   | /api/wishlist/items/:productId/move-to-cart | Private | Move item from wishlist to cart |
+
+🤖 AI FEATURES ROUTES (/api/ai)
+--------------------------------
+| Method | Endpoint | Access | Description |
+|--------|----------|--------|-------------|
+| POST   | /api/ai/size-recommendation | Private | Get size recommendations |
+| POST   | /api/ai/style-recommendations | Private | Get style recommendations |
+| POST   | /api/ai/virtual-tryon | Private | Simulate virtual try-on |
+| GET    | /api/ai/features | Public | Get available AI features |
+| GET    | /api/ai/products | Public | Get products with AI features |
+
+🏥 HEALTH CHECK ROUTE
+---------------------
+| Method | Endpoint | Access | Description |
+|--------|----------|--------|-------------|
+| GET    | /api/health | Public | Server health check |
+
+ACCESS LEVELS
+=============
+- Public: No authentication required
+- Private: Requires valid JWT token
+- Admin: Requires valid JWT token with admin role
+
+KEY FEATURES
+============
+- Rate Limiting: Applied to authentication routes
+- Input Validation: All endpoints use express-validator
+- Error Handling: Comprehensive error responses
+- Pagination: Available on product listing endpoints
+- Filtering & Sorting: Available on product endpoints
+- File Upload: Ready for product images (multer configured)
+
+TECHNOLOGY STACK
+================
+- Backend Framework: Node.js with Express.js
+- Database: MongoDB with Mongoose ODM
+- Authentication: JWT (JSON Web Tokens), bcryptjs for password hashing
+- Validation: express-validator for input validation
+- Security: helmet (security headers), cors (Cross-Origin Resource Sharing), express-rate-limit (rate limiting)
+- Performance: compression (response compression), morgan (HTTP request logger)
+- File Uploads: multer (though not explicitly implemented in routes yet, it's a dependency)
+- Real-time Communication: Socket.io (dependency, but not explicitly implemented in routes yet)
+- AI Features: Simulated endpoints for Virtual Try-On, Size Recommendations, and Style Matching.
+
+This backend provides a complete e-commerce solution with AI features, covering all essential functionalities from user management to order processing and AI-powered recommendations! 

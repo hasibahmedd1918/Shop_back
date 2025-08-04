@@ -1,0 +1,243 @@
+CURL EXAMPLES FOR AI FASHION E-COMMERCE BACKEND
+================================================
+
+STEP 1: CREATE AN ADMIN USER
+-----------------------------
+First, you need to create an admin user. Here's the curl command:
+
+```bash
+curl -X POST http://localhost:5000/api/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{
+    "firstName": "Admin",
+    "lastName": "User",
+    "email": "admin@fashion.com",
+    "password": "admin123456",
+    "phone": "+1234567890"
+  }'
+```
+
+STEP 2: LOGIN TO GET JWT TOKEN
+-------------------------------
+Login with the admin user to get a JWT token:
+
+```bash
+curl -X POST http://localhost:5000/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "admin@fashion.com",
+    "password": "admin123456"
+  }'
+```
+
+STEP 3: UPDATE USER TO ADMIN ROLE
+---------------------------------
+You'll need to manually update the user role to 'admin' in the database, or create a script to do this.
+
+STEP 4: CREATE A PRODUCT
+------------------------
+Use the JWT token from step 2 to create a product:
+
+```bash
+curl -X POST http://localhost:5000/api/products \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN_HERE" \
+  -d '{
+    "name": "Premium Cotton T-Shirt",
+    "description": "High-quality premium cotton t-shirt with a comfortable fit. Perfect for everyday wear, this t-shirt features a classic crew neck design and is made from 100% organic cotton. Available in multiple colors and sizes.",
+    "shortDescription": "Premium cotton t-shirt with comfortable fit",
+    "brand": "FashionAI",
+    "category": "shirts",
+    "subcategory": "t-shirts",
+    "gender": "unisex",
+    "price": 29.99,
+    "originalPrice": 39.99,
+    "discount": 25,
+    "images": [
+      {
+        "url": "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=500",
+        "alt": "White cotton t-shirt",
+        "isPrimary": true
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1503341504253-dff4815485f1?w=500",
+        "alt": "T-shirt detail view",
+        "isPrimary": false
+      }
+    ],
+    "colors": [
+      {
+        "name": "White",
+        "hex": "#FFFFFF",
+        "available": true
+      },
+      {
+        "name": "Black",
+        "hex": "#000000",
+        "available": true
+      },
+      {
+        "name": "Navy Blue",
+        "hex": "#000080",
+        "available": true
+      }
+    ],
+    "sizes": [
+      {
+        "size": "XS",
+        "available": true,
+        "stock": 15
+      },
+      {
+        "size": "S",
+        "available": true,
+        "stock": 25
+      },
+      {
+        "size": "M",
+        "available": true,
+        "stock": 30
+      },
+      {
+        "size": "L",
+        "available": true,
+        "stock": 25
+      },
+      {
+        "size": "XL",
+        "available": true,
+        "stock": 20
+      },
+      {
+        "size": "XXL",
+        "available": true,
+        "stock": 10
+      }
+    ],
+    "tags": ["cotton", "premium", "comfortable", "casual", "everyday"],
+    "features": [
+      "100% organic cotton",
+      "Breathable fabric",
+      "Comfortable fit",
+      "Machine washable",
+      "Pre-shrunk fabric"
+    ],
+    "materials": ["100% organic cotton"],
+    "care": [
+      "Machine wash cold",
+      "Tumble dry low",
+      "Do not bleach",
+      "Iron on low heat if needed"
+    ],
+    "measurements": {
+      "chest": "20-24 inches",
+      "waist": "18-22 inches",
+      "length": "28-30 inches",
+      "sleeve": "8-9 inches"
+    },
+    "isActive": true,
+    "isFeatured": true,
+    "isNew": true,
+    "isOnSale": true,
+    "sku": "TSHIRT-PREM-001",
+    "weight": 0.3,
+    "dimensions": {
+      "length": 28,
+      "width": 20,
+      "height": 2
+    },
+    "shipping": {
+      "weight": 0.3,
+      "dimensions": {
+        "length": 28,
+        "width": 20,
+        "height": 2
+      },
+      "freeShipping": true
+    },
+    "seo": {
+      "title": "Premium Cotton T-Shirt - FashionAI",
+      "description": "High-quality premium cotton t-shirt with comfortable fit. Available in multiple colors and sizes.",
+      "keywords": ["t-shirt", "cotton", "premium", "comfortable", "casual"]
+    },
+    "aiFeatures": {
+      "virtualTryOn": true,
+      "sizeRecommendation": true,
+      "styleMatching": true
+    }
+  }'
+```
+
+ALTERNATIVE: SIMPLIFIED PRODUCT CREATION
+----------------------------------------
+If you want a simpler version with just the required fields:
+
+```bash
+curl -X POST http://localhost:5000/api/products \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN_HERE" \
+  -d '{
+    "name": "Basic T-Shirt",
+    "description": "A comfortable basic t-shirt made from high-quality cotton.",
+    "brand": "FashionAI",
+    "category": "shirts",
+    "gender": "unisex",
+    "price": 19.99,
+    "images": [
+      {
+        "url": "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=500",
+        "alt": "Basic t-shirt"
+      }
+    ],
+    "colors": [
+      {
+        "name": "White",
+        "hex": "#FFFFFF"
+      }
+    ],
+    "sizes": [
+      {
+        "size": "M",
+        "available": true,
+        "stock": 10
+      }
+    ]
+  }'
+```
+
+STEP 5: VERIFY PRODUCT CREATION
+-------------------------------
+Get all products to verify the product was created:
+
+```bash
+curl -X GET http://localhost:5000/api/products
+```
+
+GET A SPECIFIC PRODUCT
+----------------------
+Get a specific product by ID:
+
+```bash
+curl -X GET http://localhost:5000/api/products/PRODUCT_ID_HERE
+```
+
+NOTES:
+------
+1. Replace 'YOUR_JWT_TOKEN_HERE' with the actual JWT token received from login
+2. Replace 'PRODUCT_ID_HERE' with the actual product ID
+3. Make sure your server is running on localhost:5000 (or update the URL accordingly)
+4. The admin user needs to have the 'admin' role in the database
+5. All image URLs should be valid and accessible
+6. The SKU should be unique for each product
+
+REQUIRED FIELDS FOR PRODUCT CREATION:
+------------------------------------
+- name (string, 1-100 characters)
+- description (string, 1-2000 characters)
+- brand (string)
+- category (enum: shirts, pants, dresses, skirts, jackets, coats, shoes, accessories, underwear, sportswear)
+- gender (enum: men, women, unisex)
+- price (number, positive)
+- images (array with at least one image object with url)
+- colors (array with at least one color object)
+- sizes (array with at least one size object) 
