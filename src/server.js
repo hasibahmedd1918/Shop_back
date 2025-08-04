@@ -77,7 +77,7 @@ app.use('*', (req, res) => {
 });
 
 // Database connection
-const MONGODB_URI = process.env.MONGODB_URI || process.env.DATABASE_URL || 'mongodb://localhost:27017/ai-fashion';
+const MONGODB_URI = process.env.MONGODB_URI || process.env.DATABASE_URL;
 
 // Debug environment variables
 console.log('🔍 Environment Variables Check:');

@@ -1,0 +1,122 @@
+AI CHAT ENDPOINT
+================
+
+ENDPOINT: POST /api/ai/chat
+
+FULL URL: http://localhost:5000/api/ai/chat
+
+DESCRIPTION: AI-powered chat endpoint that provides fashion advice and product recommendations using Google's Gemini AI. Supports both authenticated and anonymous users.
+
+AUTHENTICATION: Optional (Bearer token in Authorization header)
+
+RATE LIMITING: 10 messages per minute per IP
+
+REQUEST HEADERS:
+Content-Type: application/json
+Authorization: Bearer <jwt_token> (optional)
+
+EXAMPLE REQUEST:
+{
+  "message": "Show me punjabi under 5000 tk",
+  "context": {
+    "preferences": {
+      "style": "traditional",
+      "budget": "5000"
+    }
+  }
+}
+
+EXAMPLE RESPONSE (SUCCESS):
+{
+  "success": true,
+  "data": {
+    "response": "I found 5 punjabi options under ৳5000! Here are some great choices:\n\n1. Traditional Silk Punjabi - Brand: Fashion House\n   - Price: ৳4500 (Original: ৳6000)\n   - Rating: 4.5/5 (23 reviews)\n   - Available sizes: S, M, L, XL\n\n2. Casual Cotton Punjabi - Brand: Style Studio\n   - Price: ৳3800\n   - Rating: 4.2/5 (15 reviews)\n   - Available sizes: M, L, XL\n\nThese are excellent options within your budget. Would you like me to show you more details or help you find something specific?",
+    "suggestions": [
+      "Show me more options",
+      "Filter by size",
+      "Sort by price",
+      "Show me sarees"
+    ],
+    "products": [
+      {
+        "_id": "64f8a1b2c3d4e5f6a7b8c9d0",
+        "name": "Traditional Silk Punjabi",
+        "brand": "Fashion House",
+        "price": 4500,
+        "originalPrice": 6000,
+        "discount": 25,
+        "images": ["image1.jpg", "image2.jpg"],
+        "colors": ["Red", "Blue", "Green"],
+        "sizes": [
+          {"size": "S", "available": true, "stock": 5},
+          {"size": "M", "available": true, "stock": 8},
+          {"size": "L", "available": true, "stock": 3},
+          {"size": "XL", "available": true, "stock": 2}
+        ],
+        "category": "shirts",
+        "gender": "women",
+        "ratings": {
+          "average": 4.5,
+          "count": 23
+        }
+      }
+    ],
+    "searchQuery": {
+      "productType": "punjabi",
+      "maxPrice": 5000,
+      "gender": "",
+      "category": "shirts",
+      "originalMessage": "Show me punjabi under 5000 tk"
+    },
+    "timestamp": "2024-01-15T10:30:45.123Z"
+  }
+}
+
+EXAMPLE RESPONSE (VALIDATION ERROR):
+{
+  "success": false,
+  "error": "Validation failed",
+  "details": [
+    {
+      "type": "field",
+      "value": "",
+      "msg": "Message must be between 1 and 500 characters",
+      "path": "message",
+      "location": "body"
+    }
+  ]
+}
+
+EXAMPLE RESPONSE (RATE LIMIT EXCEEDED):
+{
+  "success": false,
+  "error": "Too many messages. Please wait a moment before sending another message."
+}
+
+EXAMPLE RESPONSE (SERVER ERROR):
+{
+  "success": false,
+  "error": "Failed to process chat message"
+}
+
+FEATURES:
+- Product search and recommendations
+- Multi-language support (English and Bengali)
+- Context-aware responses
+- Product filtering by price, category, gender
+- Interactive suggestions for follow-up queries
+- Rate limiting for API protection
+- Optional authentication for personalized experience
+
+SUPPORTED PRODUCT TYPES:
+- Punjabi/Panjabi (পাঞ্জাবি)
+- Saree (শাড়ি)
+- Shirt (শার্ট)
+- Dress (পোশাক)
+- Kurti (কুর্তি)
+
+SUPPORTED FILTERS:
+- Price range (under/below/less than X tk)
+- Gender (men/women)
+- Product type
+- Category 
