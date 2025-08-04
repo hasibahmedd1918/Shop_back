@@ -77,16 +77,25 @@ app.use('*', (req, res) => {
 });
 
 // Database connection
-mongoose.connect(process.env.MONGODB_URI )
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/ai-fashion';
+
+if (!process.env.MONGODB_URI) {
+  console.warn('⚠️  MONGODB_URI not found in environment variables');
+  console.warn('Using fallback MongoDB URI. Please set MONGODB_URI in Railway environment variables.');
+}
+
+mongoose.connect(MONGODB_URI)
   .then(() => {
-    console.log('Connected to MongoDB');
-    app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
-      console.log(`Environment: ${process.env.NODE_ENV}`);
+    console.log('✅ Connected to MongoDB');
+    app.listen(PORT || 5000, () => {
+      console.log(`🚀 Server running on port ${PORT || 5000}`);
+      console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
+      console.log(`🔗 Health check: http://localhost:${PORT || 5000}/api/health`);
     });
   })
   .catch(err => {
-    console.error('MongoDB connection error:', err);
+    console.error('❌ MongoDB connection error:', err);
+    console.error('💡 Make sure MONGODB_URI is set in Railway environment variables');
     process.exit(1);
   });
 
