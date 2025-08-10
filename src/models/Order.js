@@ -78,14 +78,18 @@ const orderSchema = new mongoose.Schema({
   },
   paymentMethod: {
     type: String,
-    enum: ['credit_card', 'debit_card', 'paypal', 'stripe', 'apple_pay', 'google_pay'],
+    enum: ['credit_card', 'debit_card', 'paypal', 'stripe', 'apple_pay', 'google_pay', 'bkash', 'nagad', 'rocket'],
     required: true
   },
   paymentDetails: {
     transactionId: String,
     paymentIntentId: String,
     last4: String,
-    brand: String
+    brand: String,
+    // Bangladeshi payment method details
+    mobileNumber: String,
+    transactionNumber: String,
+    paymentMethod: String // 'bkash', 'nagad', 'rocket'
   },
   shippingAddress: {
     firstName: {

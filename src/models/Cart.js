@@ -19,7 +19,6 @@ const cartSchema = new mongoose.Schema({
     },
     size: {
       type: String,
-      required: true
     },
     color: {
       type: String,
@@ -198,12 +197,7 @@ cartSchema.methods.removeCoupon = function() {
   return this.calculateTotals();
 };
 
-// Pre-save middleware to update totals
-cartSchema.pre('save', function(next) {
-  if (this.items && this.items.length > 0) {
-    this.calculateTotals();
-  }
-  next();
-});
+// Note: Removed pre-save middleware to avoid infinite loop
+// calculateTotals() already calls save(), so pre-save was causing issues
 
 module.exports = mongoose.model('Cart', cartSchema); 

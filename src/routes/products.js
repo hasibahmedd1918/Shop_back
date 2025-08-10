@@ -19,7 +19,12 @@ router.get('/', optionalAuth, [
     .withMessage('Limit must be between 1 and 100'),
   query('category')
     .optional()
-    .isIn(['shirts', 'pants', 'dresses', 'skirts', 'jackets', 'coats', 'shoes', 'accessories', 'underwear', 'sportswear'])
+    .custom((value) => {
+      if (value === 'undefined' || value === undefined) {
+        return true; // Skip validation for undefined values
+      }
+      return ['shirts', 'pants', 'dresses', 'skirts', 'jackets', 'coats', 'shoes', 'accessories', 'underwear', 'sportswear'].includes(value);
+    })
     .withMessage('Invalid category'),
   query('gender')
     .optional()
@@ -40,7 +45,12 @@ router.get('/', optionalAuth, [
     .withMessage('Max price must be a positive number'),
   query('sort')
     .optional()
-    .isIn(['price_asc', 'price_desc', 'newest', 'oldest', 'rating', 'name_asc', 'name_desc'])
+    .custom((value) => {
+      if (value === 'name') {
+        return true; // Allow 'name' as alias for 'name_asc'
+      }
+      return ['price_asc', 'price_desc', 'newest', 'oldest', 'rating', 'name_asc', 'name_desc'].includes(value);
+    })
     .withMessage('Invalid sort option'),
   query('search')
     .optional()
@@ -78,7 +88,7 @@ router.get('/', optionalAuth, [
     // Build filter object
     const filter = { isActive: true };
 
-    if (category) filter.category = category;
+    if (category && category !== 'undefined') filter.category = category;
     if (gender) filter.gender = gender;
     if (brand) filter.brand = { $regex: brand, $options: 'i' };
     if (featured === 'true') filter.isFeatured = true;
@@ -115,6 +125,7 @@ router.get('/', optionalAuth, [
       case 'rating':
         sortObj = { 'ratings.average': -1 };
         break;
+      case 'name':
       case 'name_asc':
         sortObj = { name: 1 };
         break;
@@ -164,6 +175,95 @@ router.get('/', optionalAuth, [
 });
 
 
+
+// @desc    Get product categories
+// @route   GET /api/products/categories
+// @access  Public
+router.get('/categories', async (req, res) => {
+  try {
+    const categories = await Product.distinct('category');
+    const brands = await Product.distinct('brand');
+
+    res.json({
+      success: true,
+      data: {
+        categories,
+        brands
+      }
+    });
+  } catch (error) {
+    console.error('Get categories error:', error);
+    res.status(500).json({ error: 'Server error while fetching categories' });
+  }
+});
+
+// @desc    Get featured products
+// @route   GET /api/products/featured
+// @access  Public
+router.get('/featured', async (req, res) => {
+  try {
+    const featuredProducts = await Product.find({ 
+      isFeatured: true, 
+      isActive: true 
+    })
+    .limit(8)
+    .populate('reviews.user', 'firstName lastName avatar');
+
+    res.json({
+      success: true,
+      data: featuredProducts
+    });
+  } catch (error) {
+    console.error('Get featured products error:', error);
+    res.status(500).json({ error: 'Server error while fetching featured products' });
+  }
+});
+
+// @desc    Get new arrivals
+// @route   GET /api/products/new-arrivals
+// @access  Public
+router.get('/new-arrivals', async (req, res) => {
+  try {
+    const newArrivals = await Product.find({ 
+      isNew: true, 
+      isActive: true 
+    })
+    .sort({ createdAt: -1 })
+    .limit(8)
+    .populate('reviews.user', 'firstName lastName avatar');
+
+    res.json({
+      success: true,
+      data: newArrivals
+    });
+  } catch (error) {
+    console.error('Get new arrivals error:', error);
+    res.status(500).json({ error: 'Server error while fetching new arrivals' });
+  }
+});
+
+// @desc    Get sale products
+// @route   GET /api/products/sale
+// @access  Public
+router.get('/sale', async (req, res) => {
+  try {
+    const saleProducts = await Product.find({ 
+      isOnSale: true, 
+      isActive: true 
+    })
+    .sort({ discount: -1 })
+    .limit(8)
+    .populate('reviews.user', 'firstName lastName avatar');
+
+    res.json({
+      success: true,
+      data: saleProducts
+    });
+  } catch (error) {
+    console.error('Get sale products error:', error);
+    res.status(500).json({ error: 'Server error while fetching sale products' });
+  }
+});
 
 // @desc    Get single product
 // @route   GET /api/products/:id
@@ -369,95 +469,6 @@ router.post('/:id/reviews', protect, [
   } catch (error) {
     console.error('Add review error:', error);
     res.status(500).json({ error: 'Server error while adding review' });
-  }
-});
-
-// @desc    Get product categories
-// @route   GET /api/products/categories
-// @access  Public
-router.get('/categories', async (req, res) => {
-  try {
-    const categories = await Product.distinct('category');
-    const brands = await Product.distinct('brand');
-
-    res.json({
-      success: true,
-      data: {
-        categories,
-        brands
-      }
-    });
-  } catch (error) {
-    console.error('Get categories error:', error);
-    res.status(500).json({ error: 'Server error while fetching categories' });
-  }
-});
-
-// @desc    Get featured products
-// @route   GET /api/products/featured
-// @access  Public
-router.get('/featured', async (req, res) => {
-  try {
-    const featuredProducts = await Product.find({ 
-      isFeatured: true, 
-      isActive: true 
-    })
-    .limit(8)
-    .populate('reviews.user', 'firstName lastName avatar');
-
-    res.json({
-      success: true,
-      data: featuredProducts
-    });
-  } catch (error) {
-    console.error('Get featured products error:', error);
-    res.status(500).json({ error: 'Server error while fetching featured products' });
-  }
-});
-
-// @desc    Get new arrivals
-// @route   GET /api/products/new-arrivals
-// @access  Public
-router.get('/new-arrivals', async (req, res) => {
-  try {
-    const newArrivals = await Product.find({ 
-      isNew: true, 
-      isActive: true 
-    })
-    .sort({ createdAt: -1 })
-    .limit(8)
-    .populate('reviews.user', 'firstName lastName avatar');
-
-    res.json({
-      success: true,
-      data: newArrivals
-    });
-  } catch (error) {
-    console.error('Get new arrivals error:', error);
-    res.status(500).json({ error: 'Server error while fetching new arrivals' });
-  }
-});
-
-// @desc    Get sale products
-// @route   GET /api/products/sale
-// @access  Public
-router.get('/sale', async (req, res) => {
-  try {
-    const saleProducts = await Product.find({ 
-      isOnSale: true, 
-      isActive: true 
-    })
-    .sort({ discount: -1 })
-    .limit(8)
-    .populate('reviews.user', 'firstName lastName avatar');
-
-    res.json({
-      success: true,
-      data: saleProducts
-    });
-  } catch (error) {
-    console.error('Get sale products error:', error);
-    res.status(500).json({ error: 'Server error while fetching sale products' });
   }
 });
 
